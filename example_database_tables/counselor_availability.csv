@@ -1,0 +1,11 @@
+id,date,time_slot,is_available,counselor_name
+rec001,2024-03-15,morning,true,Ms. Johnson
+rec002,2024-03-15,afternoon,true,Ms. Johnson
+rec003,2024-03-18,morning,true,Ms. Johnson
+rec004,2024-03-18,afternoon,true,Ms. Johnson
+rec005,2024-03-19,morning,true,Ms. Johnson
+rec006,2024-03-19,afternoon,false,Ms. Johnson
+rec007,2024-03-20,morning,true,Ms. Johnson
+rec008,2024-03-20,afternoon,true,Ms. Johnson
+rec009,2024-03-21,morning,true,Ms. Johnson
+rec010,2024-03-21,afternoon,true,Ms. Johnson 

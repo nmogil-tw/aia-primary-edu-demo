@@ -4,74 +4,77 @@
  * @returns
  */
 module.exports = (domain) => ({
-  customerLookup: {
-    name: 'Customer Lookup',
-    description:
-      'Use this tool at the beginning of every conversation to learn about the customer.\n\nTool Rules:\n - Mandatory at conversation start\n - Accessible fields: first name, last name, address, email, phone\n - Use to personalize greeting',
+  guardianAuthentication: {
+    name: 'Guardian Authentication',
+    description: 'Use this tool to authenticate a guardian using their contact information (email or phone) and PIN.',
     type: 'WEBHOOK',
     method: 'GET',
-    url: `https://${domain}/tools/customer-lookup`,
-  },
-  orderLookup: {
-    name: 'Order Look Up',
-    description:
-      'Use this tool to look up the customers order. ALWAYS ask the user to confirm the last four characters of their order number to ensure you are referencing the correct one.',
-    type: 'WEBHOOK',
-    method: 'GET',
-    url: `https://${domain}/tools/order-lookup`,
+    url: `https://${domain}/tools/guardian-authentication`,
     schema: {
-      order_confirmation_digits: 'string', //the last four characters of the order number
+      pin: 'string', // 4-digit PIN
     },
   },
-  returnOrder: {
-    name: 'Return Order',
-    description:
-      'Use this tool to return a customers order using the order id. Only use this tool if the order status is "delivered".',
-    type: 'WEBHOOK',
-    method: 'POST',
-    url: `https://${domain}/tools/return-order`,
-    schema: {
-      order_id: 'string', //the order id to return
-      return_reason: 'string', //why the customer is returning the order
-    },
-  },
-  customerSurvey: {
-    name: 'Customer Survey',
-    description:
-      'Use this tool when you have conducted the customer survey after you have handled all the users questions and requests. ALWAYS use this tool before ending the conversation.',
-    type: 'WEBHOOK',
-    method: 'POST',
-    url: `https://${domain}/tools/create-survey`,
-    schema: {
-      rating: 'number', //the rating the user gave 1-5
-      feedback: 'string', //the feedback the user gave
-    },
-  },
-  productInventory: {
-    name: 'Product Inventory',
-    description:
-      'Use this tool to provide product recommendations to the user.',
+  studentLookup: {
+    name: 'Student Lookup',
+    description: 'Use this tool to look up all students associated with a guardian using their contact information.',
     type: 'WEBHOOK',
     method: 'GET',
-    url: `https://${domain}/tools/products`,
+    url: `https://${domain}/tools/student-lookup`,
   },
-  sendToFelx: {
-    name: 'Send to Flex',
-    description:
-      'Use this tool when the user wants to speak with a supervisor or when you are not able to fulfill their request. ALWAYS tell the user you are transferring them to a Supervisor before using this tool.',
+  absenceLookup: {
+    name: 'Absence Lookup',
+    description: 'Use this tool to look up absence records for students associated with a guardian. You can optionally specify a date range.',
     type: 'WEBHOOK',
     method: 'GET',
-    url: `https://${domain}/tools/send-to-flex`,
+    url: `https://${domain}/tools/absence-lookup`,
+    schema: {
+      start_date: 'string', // Optional: YYYY-MM-DD
+      end_date: 'string', // Optional: YYYY-MM-DD
+    },
   },
-  placeOrder: {
-    name: 'Place Order',
-    description:
-      "User this tool to place an order, ALWAYS confirm with user if you'd like to place the order using the same billing and shipping information as their last order.",
+  reportAbsence: {
+    name: 'Report Absence',
+    description: 'Use this tool to report a student absence. The guardian must be authenticated first.',
     type: 'WEBHOOK',
     method: 'POST',
-    url: `https://${domain}/tools/place-order`,
+    url: `https://${domain}/tools/report-absence`,
     schema: {
-      product_id: 'string', //the product id to order
+      student_name: 'string',
+      date: 'string', // YYYY-MM-DD
+      reason: 'string',
+    },
+  },
+  fieldTripInfo: {
+    name: 'Field Trip Information',
+    description: 'Use this tool to look up field trip information for students associated with a guardian. Can optionally look up a specific trip using trip_id.',
+    type: 'WEBHOOK',
+    method: 'GET',
+    url: `https://${domain}/tools/field-trip-info`,
+    schema: {
+      trip_id: 'string', // Optional: specific trip ID
+    },
+  },
+  sendSMS: {
+    name: 'Send SMS',
+    description: 'Use this tool to send an SMS message to a guardian\'s phone number. Can only be used with phone numbers, not email addresses.',
+    type: 'WEBHOOK',
+    method: 'POST',
+    url: `https://${domain}/tools/send-sms`,
+    schema: {
+      message: 'string',
+    },
+  },
+  scheduleCounselorConference: {
+    name: 'Schedule Counselor Conference',
+    description: 'Use this tool to schedule a conference with the school guidance counselor. The guardian must be authenticated first.',
+    type: 'WEBHOOK',
+    method: 'POST',
+    url: `https://${domain}/tools/schedule-counselor-conference`,
+    schema: {
+      student_name: 'string',
+      preferred_date: 'string', // YYYY-MM-DD
+      preferred_time: 'string', // "morning" or "afternoon"
+      reason: 'string',
     },
   },
 });

@@ -1,0 +1,5 @@
+id,student_name,date,time_slot,reason,status,created_at,guardian_contact
+rec001,John Smith,2024-03-14,morning,Academic planning discussion,completed,2024-03-01T10:00:00Z,+1234567890
+rec002,Maria Garcia,2024-03-14,afternoon,College application guidance,completed,2024-03-01T14:30:00Z,maria.parent@email.com
+rec003,David Lee,2024-03-19,afternoon,Course selection help,scheduled,2024-03-05T09:15:00Z,+1987654321
+rec004,Sarah Johnson,2024-03-22,morning,Career counseling,scheduled,2024-03-08T11:20:00Z,sarah.mom@email.com 

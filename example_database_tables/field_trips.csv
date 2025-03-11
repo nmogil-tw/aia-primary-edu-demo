@@ -1,0 +1,6 @@
+trip_id,name,description,date,location,cost,grade_levels,permission_required
+T001,Science Museum,Interactive science exhibits and planetarium show,2024-04-15,City Science Museum,25.00,3-4,true
+T002,Zoo Adventure,Guided tour of the city zoo with animal feeding,2024-04-22,City Zoo,30.00,1-2,true
+T003,History Center,Local history exhibition and workshop,2024-05-01,History Center,15.00,5-6,true
+T004,Farm Visit,Educational farm tour and activities,2024-05-10,Green Acres Farm,20.00,2-3,true
+T005,Art Gallery,Art appreciation and painting workshop,2024-05-20,Modern Art Gallery,18.00,4-6,true 

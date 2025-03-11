@@ -1,0 +1,7 @@
+student_id,first_name,last_name,grade,teacher,guardian_id
+S001,Emma,Smith,3,Ms. Anderson,G001
+S002,Lucas,Smith,5,Mr. Thompson,G001
+S003,Sofia,Garcia,2,Mrs. Martinez,G002
+S004,James,Johnson,4,Ms. Wilson,G003
+S005,Olivia,Williams,1,Mrs. Davis,G004
+S006,Ethan,Brown,6,Mr. Roberts,G005 

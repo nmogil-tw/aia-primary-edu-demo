@@ -1,0 +1,6 @@
+absence_id,student_id,date,reason,reported_by,status
+A001,S001,2024-03-10,Medical appointment,G001,approved
+A002,S003,2024-03-11,Family event,G002,pending
+A003,S002,2024-03-12,Illness,G001,approved
+A004,S005,2024-03-15,Dental appointment,G004,pending
+A005,S004,2024-03-18,Family emergency,G003,approved 

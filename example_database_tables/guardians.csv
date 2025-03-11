@@ -1,0 +1,6 @@
+guardian_id,first_name,last_name,email,phone,pin
+G001,John,Smith,john.smith@email.com,+1234567890,1234
+G002,Maria,Garcia,maria.garcia@email.com,+1234567891,5678
+G003,David,Johnson,david.johnson@email.com,+1234567892,9012
+G004,Sarah,Williams,sarah.williams@email.com,+1234567893,3456
+G005,Michael,Brown,michael.brown@email.com,+1234567894,7890 
