@@ -1,20 +1,20 @@
 > [!NOTE]
 > Twilio AI Assistants is a [Twilio Alpha](https://twilioalpha.com) project that is currently in Developer Preview.
 
-# Twilio AI Assistant Deployment Tool - Owl Shoes
+# Twilio AI Assistant Deployment Tool - Primary School Parent Hub
 
-A modular tool for deploying a Twilio AI Assistant with pre-configured tools and knowledge bases. This project provides a structured way to create and configure an AI Assistant for retail customer service.
+A modular tool for deploying a Twilio AI Assistant with pre-configured tools and knowledge bases. This project provides a structured way to create and configure an AI Assistant for primary school parent communication and support.
 
 ## Features
 
-- Automated assistant creation with retail-focused personality
-- Pre-configured tools for common retail operations:
-  - Customer lookup
-  - Order management
-  - Returns processing
-  - Product recommendations
-  - Customer surveys
-- Knowledge base integration for FAQs
+- Automated assistant creation with education-focused personality
+- Pre-configured tools for common parent support operations:
+  - Guardian authentication
+  - Student information lookup
+  - Absence reporting
+  - Field trip information
+  - SMS notifications
+- Knowledge base integration for school FAQs
 - Modular and maintainable codebase
 
 ## Prerequisites
@@ -32,7 +32,14 @@ twilio-ai-assistant/
 ├── LICENSE                                  # MIT license file
 ├── package.json                             # Project dependencies and scripts
 ├── .env.example                             # Template for environment variables
-├── .twilioserverlessrc                      # Twilio Serverless configuration
+├── instructions.md                          # Implementation instructions
+├── example_database_tables/                 # Example CSV data for Airtable
+│   ├── guardians.csv                        # Parent/guardian information
+│   ├── students.csv                         # Student information
+│   ├── absences.csv                         # Absence records
+│   ├── field_trips.csv                      # Field trip information
+│   ├── counselor_appointments.csv           # Counselor appointment records
+│   └── counselor_availability.csv           # Counselor availability schedule
 ├── functions/                               # Serverless function implementations
 │   ├── channels/                            # Channel-specific handlers
 │   │   ├── conversations/                   # Twilio Conversations handlers
@@ -45,28 +52,26 @@ twilio-ai-assistant/
 │   │   └── voice/                           # Voice call handlers
 │   │       └── incoming-call.js             # Incoming call handling
 │   ├── front-end/                           # Front-end integration endpoints
-│   │   ├── create-customer.js               # Customer creation endpoint
-│   │   └── create-order.js                  # Order creation endpoint
 │   └── tools/                               # Assistant tool implementations
-│       ├── create-survey.js                 # CSAT survey creation
-│       ├── customer-lookup.js               # Customer information lookup
-│       ├── order-lookup.js                  # Order status lookup
-│       ├── place-order.js                   # Order placement
-│       ├── products.js                      # Product catalog access
-│       ├── return-order.js                  # Return processing
-│       └── send-to-flex.js                  # Flex transfer handler
+│       ├── guardian-authentication.js       # Guardian PIN validation
+│       ├── student-lookup.js                # Student information lookup
+│       ├── report-absence.js                # Absence reporting
+│       ├── field-trip-info.js               # Field trip information
+│       └── send-sms.js                      # SMS notification sender
 ├── prompts/                                 # Assistant configuration
 │   └── assistant-prompt.md                  # Core personality and behavior
 └── src/                                     # Deployment and configuration
     ├── deploy.js                            # Main deployment script
+    ├── redeploy.js                          # Redeployment script
     ├── config/                              # Configuration modules
     │   ├── assistant.js                     # Assistant settings
     │   ├── knowledge.js                     # Knowledge base config
     │   └── tools.js                         # Tool configurations
-    └── lib/                                 # Core functionality
-        ├── createAssistant.js               # Assistant creation
-        ├── createKnowledge.js               # Knowledge base setup
-        └── createTools.js                   # Tool creation and attachment
+    ├── lib/                                 # Core functionality
+    │   ├── createAssistant.js               # Assistant creation
+    │   ├── createKnowledge.js               # Knowledge base setup
+    │   └── createTools.js                   # Tool creation and attachment
+    └── assistant/                           # Assistant-specific modules
 ```
 
 ## Quick Start
@@ -74,8 +79,8 @@ twilio-ai-assistant/
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/twilio-samples/ai-assistant-demo-owl-shoes.git
-cd ai-assistant-demo-owl-shoes
+git clone https://github.com/twilio-samples/ai-assistant-demo-primary-edu.git
+cd ai-assistant-demo-primary-edu
 ```
 
 2. Install dependencies:
@@ -86,26 +91,23 @@ npm install
 
 3. Configure Airtable:
 
-   a. Copy the Airtable base using [this link](https://airtable.com/appJpmkefU6JV7lfl/shr2bXI3Hv4bZkaeU)
+   a. Create a new Airtable base with the following tables:
+      - Guardians: Parent/guardian information
+      - Students: Student information
+      - Absences: Absence records
+      - Field Trips: Field trip information
+      - Counselor Appointments: Counselor appointment records
+      - Counselor Availability: Counselor availability schedule
 
-   b. Once copied, you'll find the base ID in your Airtable URL (it looks like 'appXXXXXXXXXXXXX')
+   b. Use the CSV files in the `example_database_tables` directory as templates for your tables
 
-   c. Generate an Airtable access token:
+   c. Once created, find the base ID in your Airtable URL (it looks like 'appXXXXXXXXXXXXX')
 
-   - Go to your [Airtable account](https://airtable.com/create/tokens)
-   - Click "Create new token"
-   - Give it a name and select the necessary scopes for your base
-   - Copy the generated token
-
-   The base includes tables for:
-
-   - Customers: Customer information for personalization
-   - Orders: Order history data
-   - Inventory: Product catalog information
-   - Surveys: CSAT surveys conducted by the Assistant
-   - Returns: Returns proccessed by the Assistant
-
-   Its recommend you add yourself and some additional data to the table for demo purposes.
+   d. Generate an Airtable access token:
+      - Go to your [Airtable account](https://airtable.com/create/tokens)
+      - Click "Create new token"
+      - Give it a name and select the necessary scopes for your base
+      - Copy the generated token
 
 4. Configure environment variables:
 
@@ -209,76 +211,55 @@ twilio api:conversations:v1:services:configuration:webhooks:update \
 
 The assistant uses several tool functions that need to be implemented:
 
-1. Customer Lookup (`/tools/customer-lookup`)
+1. Guardian Authentication (`/tools/guardian-authentication`)
+   - Validates guardian PIN
+   - Authenticates guardians based on phone/email and PIN
+   - Returns authentication status and guardian information
 
-   - GET request
-   - Looks up customer information
-   - Returns customer details
-
-2. Order Lookup (`/tools/order-lookup`)
-
-   - GET request
-   - Retrieves order information
-   - Validates order ID
+2. Student Lookup (`/tools/student-lookup`)
+   - Retrieves student information for authorized guardians
+   - Returns list of students associated with the guardian
    - Input schema:
      ```javascript
      {
-       order_confirmation_digits: string; //Last 4 digits of customers order
+       guardian_id: string; // Required: guardian identifier
      }
      ```
 
-3. Create Survey (`/tools/create-survey`)
-
-   - POST request
-   - Creates customer satisfaction survey records
-   - Captures rating and feedback
-   - Requires customer identification via x-identity header
+3. Report Absence (`/tools/report-absence`)
+   - Logs absence reports in the database
+   - Creates absence record with student ID, date, reason
    - Input schema:
      ```javascript
      {
-       rating: number,    // Required: 1-5 rating
-       feedback: string   // Optional: customer feedback
+       student_id: string,    // Required: student identifier
+       date: string,          // Required: date of absence
+       reason: string,        // Required: reason for absence
+       reported_by: string    // Required: guardian identifier
      }
      ```
 
-4. Order Return (`/tools/return-order`)
-
-   - POST request
-   - Initiates return process for delivered orders
-   - Validates order status and existing returns
-   - Creates return record and updates order
+4. Field Trip Info (`/tools/field-trip-info`)
+   - Retrieves field trip information
+   - Provides details about upcoming field trips
    - Input schema:
      ```javascript
      {
-       order_id: string,      // Required: order identifier
-       return_reason: string  // Required: reason for return
+       grade_level: string,   // Optional: filter by grade level
+       trip_id: string        // Optional: specific trip identifier
      }
      ```
 
-5. Place Order (`/tools/place-order`)
-
-   - POST request
-   - Creates new orders using customer information
-   - Handles product lookup and pricing
-   - Calculates any applicable discounts
+5. Send SMS (`/tools/send-sms`)
+   - Sends SMS messages with field trip information
+   - Delivers notifications to guardians
    - Input schema:
      ```javascript
      {
-       product_id: string; // Required: product identifier
+       phone_number: string,  // Required: recipient phone number
+       message: string        // Required: message content
      }
      ```
-
-6. Product Inventory (`/tools/products`)
-
-   - GET request
-   - Retrieves complete product catalog
-   - Includes product details, pricing, and availability
-   - Used for product recommendations
-   - No input parameters required
-
-7. Product Inventory (`/tools/send-to-flex`)
-   - POST request
-   - Transfers conversation to a flex queue
 
 ## Development
 
@@ -313,13 +294,27 @@ npm run deploy
 
 1. Update the prompt in `prompts/assistant-prompt.md`
 2. Modify tool configurations as needed
-3. Redeploy the assistant
+3. Redeploy the assistant:
+
+```bash
+npm run redeploy
+```
 
 ### Local Development
 
 1. Create test credentials in Twilio
 2. Use test credentials in `.env`
 3. Deploy functions and assistant separately for easier debugging
+
+## Demo Scenario
+
+The system is designed to handle the following scenario:
+
+1. Parent reaches out to report an upcoming absence for their child
+2. AI Assistant asks user to provide their "guardian PIN" to ensure they are authorized
+3. AI Assistant logs absence in "absences" table in Airtable
+4. Parent asks about upcoming field trip
+5. AI Assistant sends info about field trip via SMS
 
 ## Error Handling
 
